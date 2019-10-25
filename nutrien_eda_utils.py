@@ -25,6 +25,7 @@ class EdaUtils():
         
         '''
         path_to_data: the path to the data folder on Box, ending in "CPT Canada - Cognitive & Analytics Practice/Nutrien/data/" 
+        functions with visualize_ at the biggining create visualizations
         
         '''
         
@@ -66,7 +67,7 @@ class EdaUtils():
     
     def visualize_us_import_quantity_trade(self):
 
-        MOP_trade= pd.read_excel(self.path_to_data + 'CRU/usa-net-potash-import.xlsx')
+        MOP_trade= pd.read_excel(self.path_to_data + 'CRU/usa-net-potash-import_clean.xlsx')
         MOP_trade = MOP_trade.T
         MOP_trade.rename(columns = {0:'Canada' , 1:'World'} , inplace = True)
         MOP_trade = MOP_trade.drop(['Import_from' , '2018 YTD'])
@@ -80,14 +81,14 @@ class EdaUtils():
         
         return MOP_trade
     
-    def calculate_us_per_area_affodability(self):
+    def visualize_calculate_us_per_area_affodability(self):
 
         csb_price= pd.read_excel(self.path_to_data + 'Other/us-wheat-corn-soy-prices-2010-to.xlsx', 'Price')
         csb_price = csb_price[csb_price.date >= pd.to_datetime('2010-01-07 00:00:00')]
         #df = csb_price.groupby([pd.Grouper(key = 'date' , freq='W-MON')]).mean()
         df = csb_price.groupby([pd.TimeGrouper(key='date', freq='7D')]).mean()
         
-        MOP_price= pd.read_excel(self.path_to_data + 'CRU/us-weekly-potash-fob-spot-price.xlsx')
+        MOP_price= pd.read_excel(self.path_to_data + 'CRU/us-weekly-potash-fob-spot-price_clean.xlsx')
         #MOP_price = MOP_price.dropna()
         MOP_price.rename(columns = {'PriceDate':'date' } , inplace = True)
         df = df.merge(MOP_price , on = 'date')
@@ -117,9 +118,9 @@ class EdaUtils():
         
         return df
 
-    def us_affordibiity_demand_lagged_correlation(self):
+    def visualize_us_affordibiity_demand_lagged_correlation(self):
         
-        df = self.calculate_us_per_area_affodability()
+        df = self.visualize_calculate_us_per_area_affodability()
         MOP_trade = self.visualize_us_import_quantity_trade()
         
         df_ann = df.groupby([pd.TimeGrouper('M',key='date')]).mean()
@@ -143,9 +144,9 @@ class EdaUtils():
 
 
 
-    def us_affordibiity_demand_elasticity(self):
+    def visualize_us_affordibiity_demand_elasticity(self):
         
-        df = self.calculate_us_per_area_affodability()
+        df = self.visualize_calculate_us_per_area_affodability()
         MOP_trade = self.visualize_us_import_quantity_trade()
         
         df_ann = df.groupby([pd.TimeGrouper('M',key='date')]).mean()
@@ -202,7 +203,7 @@ class EdaUtils():
 #        oct_forec= pd.read_csv('/Users/nkordjazi@ibm.com/Box/CPT Canada - Cognitive & Analytics Practice/Nutrien/data/WeatherData/October2019Forecast/precipitation-forecast-6-months-forward_allregions.csv')
 
 ################################ WEATHER VISUALIZATION
-    def weather_deviation_from_average_visualize(self , regions_of_interest = []):
+    def visualize_weather_deviation_from_average(self , regions_of_interest = []):
         
         '''
         Visualizes weather in regions of interest - if [] visualizes all regions  e.g. regions_of_interest = ['USNorthCentral','USSouth']
